@@ -27,7 +27,7 @@ public class AuthServiceImpl implements AuthService {
                 .firstName(req.firstName())
                 .lastName(req.lastName())
                 .phoneNumber(req.phoneNumber())
-                .role(Role.CUSTOMER)
+                .role(Role.ROLE_CUSTOMER)
                 .build();
 
         userRepository.save(user);

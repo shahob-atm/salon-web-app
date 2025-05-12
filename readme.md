@@ -20,8 +20,10 @@ The backend is powered by Spring Boot and integrates with Keycloak for secure id
 
 - [x] User registration & login (OTP based)
 - [x] Role-based access (admin, customer)
+- [x] User service
 - [ ] Booking system
-- [ ] Salon working hours configuration
+- [x] Salon working hours configuration
+- [x] Salon service
 - [ ] Admin panel
 - [ ] Notifications (email/SMS)
 
