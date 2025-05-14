@@ -50,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
         category.setName(req.name());
         category.setImage(req.image());
 
-        return null;
+        return categoryRepository.save(category);
     }
 
     @Override

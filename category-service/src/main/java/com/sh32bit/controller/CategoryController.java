@@ -46,7 +46,7 @@ public class CategoryController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @GetMapping("/salon/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable("id") Long id) throws Exception {
         Category category = categoryService.getCategoryById(id);
         CategoryResponse response = CategoryMapper.toCategoryResponse(category);
