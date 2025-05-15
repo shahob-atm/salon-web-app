@@ -68,7 +68,7 @@ public class KeycloakUserService {
 
             KeycloakUser user = fetchFirstUserByUsername(req.username(), accessToken);
 
-            KeycloakRole role = getRoleByName(clientId, accessToken, Role.CUSTOMER.name());
+            KeycloakRole role = getRoleByName(clientId, accessToken, Role.ROLE_CUSTOMER.name());
 
             assignRoleToUser(user.id(), clientId, List.of(role), accessToken);
 
