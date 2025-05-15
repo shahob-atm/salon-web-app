@@ -1,0 +1,7 @@
+services:
+  eurekaserver:
+    image: "shakhabkhan/eureka-server"
+    ports:
+      - "8070:8070"
+    healthcheck:
+      test: ["CMD-SHELL"]
