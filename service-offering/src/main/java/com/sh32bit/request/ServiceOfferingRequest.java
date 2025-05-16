@@ -15,4 +15,5 @@ public class ServiceOfferingRequest {
     private int duration;
     private boolean available;
     private String image;
+    private Long categoryId;
 }

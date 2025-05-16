@@ -6,6 +6,8 @@ import com.sh32bit.request.CategoryRequest;
 import com.sh32bit.response.CategoryResponse;
 import com.sh32bit.response.SalonResponse;
 import com.sh32bit.service.CategoryService;
+import com.sh32bit.service.client.SalonFeignClient;
+import com.sh32bit.service.client.UserFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +22,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
+    private final UserFeignClient userFeignClient;
+    private final SalonFeignClient salonFeignClient;
 
     @PostMapping("/create")
-    public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryRequest categoryRequest) {
-        SalonResponse res = SalonResponse.builder().id(1L).build();
+    public ResponseEntity<CategoryResponse> createCategory(
+            @RequestBody CategoryRequest categoryRequest,
+            @RequestHeader("Authorization") String jwt
+    ) throws Exception {
+        SalonResponse res = salonFeignClient.getSalonByOwnerId(jwt).getBody();
         Category category = categoryService.createCategory(categoryRequest, res);
 
         CategoryResponse response = CategoryMapper.toCategoryResponse(category);

@@ -7,6 +7,8 @@ import com.sh32bit.response.CategoryResponse;
 import com.sh32bit.response.SalonResponse;
 import com.sh32bit.response.ServiceOfferingResponse;
 import com.sh32bit.service.ServiceOfferingService;
+import com.sh32bit.service.client.CategoryFeignClient;
+import com.sh32bit.service.client.SalonFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +23,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ServiceOfferingController {
     private final ServiceOfferingService serviceOfferingService;
+    private final SalonFeignClient salonFeignClient;
+    private final CategoryFeignClient categoryFeignClient;
 
     @PostMapping("/create")
-    public ResponseEntity<ServiceOfferingResponse> create(@RequestBody ServiceOfferingRequest req) {
-        SalonResponse salonRes = SalonResponse.builder().id(1L).build();
-        CategoryResponse categoryRes = CategoryResponse.builder().id(2L).build();
+    public ResponseEntity<ServiceOfferingResponse> create(
+            @RequestBody ServiceOfferingRequest req,
+            @RequestHeader("Authorization") String jwt
+    ) throws Exception {
+        SalonResponse salonRes = salonFeignClient.getSalonByOwnerId(jwt).getBody();
+        CategoryResponse categoryRes = categoryFeignClient.getCategoryById(req.getCategoryId()).getBody();
 
         ServiceOffering serviceOffering = serviceOfferingService.create(req, salonRes, categoryRes);
         ServiceOfferingResponse res = ServiceOfferingMapper.toServiceOfferingResponse(serviceOffering);

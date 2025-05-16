@@ -1,14 +1,12 @@
 package com.sh32bit.controller;
 
-import com.razorpay.RazorpayException;
 import com.sh32bit.enums.PaymentMethod;
-import com.sh32bit.exception.UserException;
 import com.sh32bit.model.PaymentOrder;
 import com.sh32bit.response.BookingResponse;
 import com.sh32bit.response.PaymentLinkResponse;
 import com.sh32bit.response.UserResponse;
 import com.sh32bit.service.PaymentOrderService;
-import com.stripe.exception.StripeException;
+import com.sh32bit.service.client.UserFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +17,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PaymentOrderController {
     private final PaymentOrderService paymentOrderService;
+    private final UserFeignClient userFeignClient;
 
     @PostMapping("/create")
     public ResponseEntity<PaymentLinkResponse> createPaymentLink(
             @RequestBody BookingResponse booking,
-            @RequestParam PaymentMethod paymentMethod) throws UserException,
-            RazorpayException, StripeException {
-        UserResponse userResponse = UserResponse.builder().id(1L).build();
+            @RequestParam PaymentMethod paymentMethod,
+            @RequestHeader("Authorization") String jwt) throws Exception {
+        UserResponse userResponse = userFeignClient.getUserByJwtToken(jwt).getBody();
 
         PaymentLinkResponse response = paymentOrderService.createOrder(userResponse, booking, paymentMethod);
 

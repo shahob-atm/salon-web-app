@@ -39,6 +39,12 @@ spring:
             "lb://USER-SERVICE"
           predicates:
             - Path=/api/users/**, /api/auth/**
+  security:
+    oauth2:
+      resource server:
+        jwt:
+          jwk-set-uri: "http://localhost:8080/realms/master/protocol/openid-connect/certs"
+
 eureka:
   instance:
     prefer-ip-address: true

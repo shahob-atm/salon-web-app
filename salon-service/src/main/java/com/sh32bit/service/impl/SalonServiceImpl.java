@@ -25,10 +25,15 @@ public class SalonServiceImpl implements SalonService {
     }
 
     @Override
-    public Salon updateSalon(Long id, SalonRequest req) throws Exception {
+    public Salon updateSalon(Long id, SalonRequest req, UserResponse userResponse) throws Exception {
         Salon salon = salonRepository.findById(id)
                 .orElseThrow(() -> new Exception("Salon not found"));
-        mapRequestToSalon(salon, req);
+
+        if (userResponse.id().equals(salon.getOwnerId())) {
+            mapRequestToSalon(salon, req);
+        } else {
+            throw new Exception("Owner id mismatch");
+        }
 
         return salonRepository.save(salon);
     }

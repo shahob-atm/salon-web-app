@@ -1,12 +1,12 @@
 package com.sh32bit.controller;
 
-import com.sh32bit.enums.Role;
 import com.sh32bit.mapper.SalonMapper;
 import com.sh32bit.model.Salon;
 import com.sh32bit.request.SalonRequest;
 import com.sh32bit.response.SalonResponse;
 import com.sh32bit.response.UserResponse;
 import com.sh32bit.service.SalonService;
+import com.sh32bit.service.client.UserFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,17 +19,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SalonController {
     private final SalonService salonService;
+    private final UserFeignClient userFeignClient;
 
     @PostMapping("/create")
-    public ResponseEntity<SalonResponse> createSalon(@RequestBody SalonRequest salonRequest) {
-        UserResponse userResponse = new UserResponse(
-                1L,
-                "Ali",
-                "Kamolov",
-                "ali@mail.com",
-                "ali",
-                Role.ROLE_ADMIN
-        );
+    public ResponseEntity<SalonResponse> createSalon(
+            @RequestBody SalonRequest salonRequest,
+            @RequestHeader("Authorization") String jwt
+    ) throws Exception {
+        UserResponse userResponse = userFeignClient.getUserByJwtToken(jwt).getBody();
 
         Salon salon = salonService.createSalon(userResponse, salonRequest);
         SalonResponse res = SalonMapper.mapToSalonResponse(salon);
@@ -39,17 +36,11 @@ public class SalonController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<SalonResponse> updateSalon(@PathVariable("id") Long id,
-                                                     @RequestBody SalonRequest salonRequest) throws Exception {
-        UserResponse userResponse = new UserResponse(
-                1L,
-                "Ali",
-                "Kamolov",
-                "ali@mail.com",
-                "ali",
-                Role.ROLE_ADMIN
-        );
+                                                     @RequestBody SalonRequest salonRequest,
+                                                     @RequestHeader("Authorization") String jwt) throws Exception {
+        UserResponse userResponse = userFeignClient.getUserByJwtToken(jwt).getBody();
 
-        Salon salon = salonService.updateSalon(id, salonRequest);
+        Salon salon = salonService.updateSalon(id, salonRequest, userResponse);
         SalonResponse res = SalonMapper.mapToSalonResponse(salon);
 
         return new ResponseEntity<>(res, HttpStatus.OK);
@@ -80,8 +71,11 @@ public class SalonController {
     }
 
     @GetMapping("/salon/by-owner")
-    public ResponseEntity<SalonResponse> getSalonByOwnerId() {
-        Salon salon = salonService.getSalonByOwnerId(1L);
+    public ResponseEntity<SalonResponse> getSalonByOwnerId(
+            @RequestHeader("Authorization") String jwt) throws Exception {
+        UserResponse userResponse = userFeignClient.getUserByJwtToken(jwt).getBody();
+        assert userResponse != null;
+        Salon salon = salonService.getSalonByOwnerId(userResponse.id());
         SalonResponse res = SalonMapper.mapToSalonResponse(salon);
 
         return new ResponseEntity<>(res, HttpStatus.OK);

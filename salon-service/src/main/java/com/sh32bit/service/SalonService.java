@@ -9,7 +9,7 @@ import java.util.List;
 public interface SalonService {
     Salon createSalon(UserResponse userResponse, SalonRequest salonRequest);
 
-    Salon updateSalon(Long id, SalonRequest salonRequest) throws Exception;
+    Salon updateSalon(Long id, SalonRequest salonRequest, UserResponse userResponse) throws Exception;
 
     List<Salon> getAllSalons();
 
