@@ -1,0 +1,21 @@
+server:
+  port: 5008
+spring:
+  application:
+    name: review
+  datasource:
+    url: jdbc:mysql://localhost:3306/salon_review_db?createDatabaseIfNotExist=true
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8070/eureka
