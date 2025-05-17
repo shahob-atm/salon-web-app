@@ -28,7 +28,7 @@ The backend is powered by Spring Boot and integrates with Keycloak for secure id
 - [x] Booking system
 - [x] Payment service
 - [ ] Admin panel
-- [ ] Notifications (email/SMS)
+- [x] Notifications (email/SMS)
 
 
 ## 🐳 Deployment
